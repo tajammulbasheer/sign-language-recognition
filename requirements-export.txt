@@ -1,0 +1,4 @@
+# TensorFlow Lite (LiteRT) export and inference. Linux; Python 3.10-3.12.
+litert-torch
+ai-edge-litert
+onnx

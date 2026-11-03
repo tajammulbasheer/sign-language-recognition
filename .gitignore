@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Datasets and downloads (fetched at run time; never committed)
+/data/
+/datasets/
+*.zip
+kaggle.json
+.env
+
+# Run outputs: checkpoints, caches, exported models, logs
+/runs/
+*.pt
+*.pth
+*.ckpt
+*.tflite
+*.onnx
+*.task
+*.npz
+*.npy
+*.log
+*.mp4
+*.avi
+
+# Scratch notebooks
+Untitled*.ipynb
+
+# OS
+.DS_Store
+Thumbs.db

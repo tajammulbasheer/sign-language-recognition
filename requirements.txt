@@ -1,0 +1,13 @@
+# Core pipeline (Python 3.10-3.12; tested on 3.12)
+torch>=2.4
+torchvision>=0.19
+numpy>=1.26
+mediapipe>=0.10.20
+ultralytics>=8.3.0
+scikit-learn>=1.4
+matplotlib>=3.8
+tqdm>=4.66
+pyyaml>=6.0
+kagglehub>=0.3
+transformers>=4.44
+pytest>=8.0
