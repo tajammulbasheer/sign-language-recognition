@@ -51,38 +51,67 @@ file automatically. Nothing is typed by hand; "not run yet" marks experiments th
 <!-- RESULTS:START -->
 ### 1. Hand detector (YOLO, Ultralytics Hand Keypoints val set)
 
-| Box mAP50 | Box mAP50-95 | Keypoint mAP50 |
-|---|---|---|
-| not run yet | — | — |
+| Model | Box mAP50 | Box mAP50-95 | Keypoint mAP50 |
+|---|---|---|---|
+| yolo11n-pose, 30 epochs | 0.992 | 0.886 | 0.841 |
 
 ### 2. Static signs: ASL alphabet (29 classes)
 
-| Hand found in | ASL Alphabet test | ASL Alphabet Test (OOD) |
+| Hand found in (images that contain a hand) | ASL Alphabet test | ASL Alphabet Test (OOD) |
 |---|---|---|
-| not run yet | — | — |
+| MediaPipe, full image | 76.8% | 93.6% |
+| YOLO crop + MediaPipe | 71.9% | 90.0% |
 
 | Model | Params | Test (same signer) | ASL Alphabet Test (OOD) |
 |---|---|---|---|
-| not run yet | — | — | — |
+| CNN on pixels (mobilenet_v3_large) | 4.24M | 100.0% | 64.3% |
+| Landmark MLP (MediaPipe) | 0.14M | 75.7% | 87.4% |
+| Landmark MLP (YOLO crop + MediaPipe) | 0.14M | 70.8% | 83.0% |
 
+![Static alphabet accuracy, in-distribution vs out-of-distribution](assets/static_ood.png)
 
 ### 3. Word-level signs: WLASL100 (100 words, official test split)
 
-WLASL100 data: not run yet.
+WLASL100 videos available: **748 train / 165 val / 100 test** (official split; 1025 annotated videos are missing from the public copy).
+
+| Hand found in (same 150 val/test videos) | Frames with a hand |
+|---|---|
+| YOLO crop + MediaPipe | 61.8% |
+| MediaPipe, full frame | 64.1% |
 
 | Model | Input | Augmentation | Top-1 | Top-5 | Mean class acc. | Params | Seeds |
 |---|---|---|---|---|---|---|---|
-| not run yet | — | — | — | — | — | — | — |
+| BiLSTM | hands + pose | yes | 62.7 ± 1.9% | 87.0 ± 0.8% | 66.1 ± 1.6% | 1.62M | 3 |
+| BiLSTM | hands + pose | no | 64.0 ± 2.8% | 87.0 ± 0.8% | 68.0 ± 2.9% | 1.62M | 3 |
+| BiLSTM | hands | yes | 61.0 ± 2.8% | 84.7 ± 0.5% | 64.3 ± 2.0% | 1.61M | 3 |
+| BiGRU | hands + pose | yes | 65.0 ± 1.4% | 86.7 ± 1.7% | 68.5 ± 1.4% | 1.25M | 3 |
+| BiGRU | hands + pose | no | 69.0 ± 1.4% | 90.3 ± 0.5% | 72.2 ± 0.8% | 1.25M | 3 |
+| BiGRU | hands | yes | 64.3 ± 1.2% | 88.3 ± 1.9% | 68.4 ± 2.3% | 1.24M | 3 |
+| Landmark TimeSformer | hands + pose | yes | 52.3 ± 5.4% | 79.3 ± 2.6% | 56.2 ± 5.8% | 0.47M | 3 |
+| Landmark TimeSformer | hands + pose | no | 49.7 ± 3.4% | 74.0 ± 4.5% | 52.9 ± 4.1% | 0.47M | 3 |
+| Landmark TimeSformer | hands | yes | 50.3 ± 2.9% | 78.3 ± 1.7% | 54.0 ± 2.2% | 0.47M | 3 |
+| RGB TimeSformer (pixels) | RGB frames | flip + crop | 29.0% | 78.0% | 28.0% | 121M | 1 |
 
 *For context, published WLASL100 top-1 (different pipelines, not re-run here): Pose-TGCN (pose) 55.4% (Li et al., WACV 2020); ST-GCN (pose) 50.8% (reported in Hu et al., SignBERT+, 2023); I3D (RGB) 65.9% (Li et al., WACV 2020).*
 
+![WLASL100 test top-1 by model, with and without temporal augmentation](assets/wlasl_models.png)
 
+![Validation accuracy per epoch](assets/wlasl_curves.png)
 
 ### 4. Deployment: TensorFlow Lite on CPU
 
 | Model | Params | TFLite size | TFLite CPU, 1 thread | 4 threads | PyTorch CPU, 1 thread | PyTorch vs TFLite top-1 agreement | Max logit diff |
 |---|---|---|---|---|---|---|---|
-| not run yet | — | — | — | — | — | — | — |
+| Landmark MLP (static) | 0.14M | 0.54 MB | 0.01 ms | 0.01 ms | 0.04 ms | 100.00% | 3.3e-06 |
+| BiLSTM | 1.62M | 6.53 MB | 3.96 ms | 1.60 ms | 1.73 ms | 100.00% | 5.7e-06 |
+| BiGRU | 1.25M | 5.17 MB | 2.87 ms | 1.21 ms | 1.84 ms | 100.00% | 7.2e-06 |
+| Landmark TimeSformer | 0.47M | 2.47 MB | 14.47 ms | 4.82 ms | 16.15 ms | 100.00% | 4.3e-06 |
+
+RGB TimeSformer for comparison (PyTorch, not exported): 2578 ms per clip on 1 CPU thread, 21.7 ms on GPU (fp16); 121M parameters.
+
+**End-to-end real-time pipeline** (yolo+mediapipe landmarks + tflite model, 91 frames, model run every 4 frames): landmarks 37.1 ms per frame, model 2.1 ms per prediction, so **20.2 FPS** throughput and 39 ms from frame to prediction.
+
+![Accuracy versus CPU latency](assets/accuracy_vs_latency.png)
 
 <!-- RESULTS:END -->
 
