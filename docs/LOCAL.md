@@ -5,15 +5,15 @@ under WSL2 with Ubuntu 24.04, and should work on any Linux GPU box with Python 3
 
 ## 1. One-time setup
 
-Keep the repo and data on the **Linux filesystem** (e.g. `~/sign_language_recognition`), never under
+Keep the repo and data on the **Linux filesystem** (e.g. `~/sign-language-recognition`), never under
 `/mnt/c/...`. Reading thousands of video frames from the Windows drive inside WSL is many times slower.
 
 ```bash
 nvidia-smi                       # must list your GPU; if not, install the Windows NVIDIA driver with WSL support
 sudo apt install -y python3-venv tmux git
 
-git clone https://github.com/tajammulbasheer/sign_language_recognition.git
-cd sign_language_recognition
+git clone https://github.com/tajammulbasheer/sign-language-recognition.git
+cd sign-language-recognition
 python3 -m venv .venv && source .venv/bin/activate
 pip install -U pip
 pip install -r requirements.txt -r requirements-export.txt

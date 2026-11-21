@@ -170,8 +170,8 @@ Everything runs on one local GPU (developed for an RTX A4000, 16 GB, under WSL2 
 See **[docs/LOCAL.md](docs/LOCAL.md)** for setup, time estimates and troubleshooting.
 
 ```bash
-git clone https://github.com/tajammulbasheer/sign_language_recognition.git
-cd sign_language_recognition
+git clone https://github.com/tajammulbasheer/sign-language-recognition.git
+cd sign-language-recognition
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt -r requirements-export.txt
 
